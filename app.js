@@ -7,11 +7,16 @@ const userRoute = require('./reources/route')
 const app = express()
 
 // Enhanced CORS configuration for Android apps
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+    ? ['https://yourdomain.com', 'https://www.yourdomain.com'] // Replace with your actual domains
+    : '*'; // Allow all origins in development
+
 app.use(cors({
-    origin: '*', // For development - restrict this in production
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    credentials: false
+    credentials: false,
+    optionsSuccessStatus: 200 // For legacy browser support
 }))
 
 app.use(express.json({ limit: '10mb' }))
