@@ -11,13 +11,13 @@ const pool = mysql2.createPool({
 })
 
 // Test the connection
-pool.getConnection()
-    .then(connection => {
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error('Database connection failed:', err.message)
+    } else {
         console.log('Database connected successfully')
         connection.release()
-    })
-    .catch(error => {
-        console.error('Database connection failed:', error.message)
-    })
+    }
+})
 
 module.exports = pool.promise()
