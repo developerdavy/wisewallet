@@ -1,4 +1,4 @@
-const db = require('../reources/connection')
+const db = require('../resources/connection')
 const bcrypt = require('bcrypt')
 
 // Get all users
@@ -15,17 +15,23 @@ const getAllUsers = async(req, res) =>{
             })
         }
 
+        const usersWithoutPasswords = users.map(user => {
+            const { PASSWORD_HASH, ...userWithoutPassword } = user
+            return userWithoutPassword
+        })
+        
         res.status(200).json({
             status : 'success',
-            users : users
+            users : usersWithoutPasswords
         })
 
         
     } catch (error) {
 
+        console.error('Database error:', error)
         res.status(500).json({
-            status : 'Failed to fetch users',
-            message : error.message
+            status : 'failed',
+            message : 'Internal server error'
         })
         
     }
@@ -101,10 +107,10 @@ const createUser = async(req, res) => {
         })
         
     } catch (error) {
+        console.error('Database error:', error)
         res.status(500).json({
             status : 'failed',
-            message : 'Failed to create user',
-            error : error.message
+            message : 'Failed to create user'
         })
     }
 }
@@ -123,16 +129,17 @@ const getUserById = async(req, res) => {
             })
         }
 
+        const { PASSWORD_HASH, ...userWithoutPassword } = user[0]
         res.status(200).json({
             status : 'success',
-            user : user[0]
+            user : userWithoutPassword
         })
         
     } catch(error){
+        console.error('Database error:', error)
         res.status(500).json({
             status : 'failed',
-            message : 'Failed to fetch user',
-            error : error.message
+            message : 'Internal server error'
         })
     }
 }
